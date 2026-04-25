@@ -1,6 +1,6 @@
 import { serve } from "bun";
 import index from "./index.html";
-import { save, getAll, getById, update, remove } from "./services/ContactService";
+import { save, getAll, getById, update, remove } from "./server/services/ContactService";
 
 const server = serve({
   routes: {

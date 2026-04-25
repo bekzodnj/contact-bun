@@ -1,6 +1,5 @@
 import { Database } from "bun:sqlite";
 
-// --- Types ---
 export interface Contact {
     id?: number;
     name: string;
@@ -10,7 +9,6 @@ export interface Contact {
     updated_at?: string;
 }
 
-// --- Database setup ---
 const db = new Database("contacts.sqlite", {
     create: true,
     strict: true,
@@ -29,14 +27,14 @@ db.run(`
     )
 `);
 
-// --- Prepared statements (cached via db.query) ---
+//prepared statements (cached via db.query)
 const insertStmt = db.query("INSERT INTO contacts (name, email, phone) VALUES (?, ?, ?)");
 const selectAllStmt = db.query("SELECT * FROM contacts");
 const selectByIdStmt = db.query("SELECT * FROM contacts WHERE id = ?");
 const updateStmt = db.query("UPDATE contacts SET name = ?, email = ?, phone = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
 const deleteStmt = db.query("DELETE FROM contacts WHERE id = ?");
 
-// --- Seed (only if table is empty) ---
+// seed
 const { count } = db.query("SELECT COUNT(*) as count FROM contacts").get() as { count: number };
 if (count === 0) {
     const seedContacts = db.transaction(() => {
@@ -47,7 +45,7 @@ if (count === 0) {
     seedContacts();
 }
 
-// --- CRUD operations ---
+// crud
 export function save(contact: Contact) {
     return insertStmt.run(contact.name, contact.email, contact.phone);
 }
