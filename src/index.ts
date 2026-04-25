@@ -1,5 +1,6 @@
 import { serve } from "bun";
 import index from "./index.html";
+import { save, getAll, getById, update, remove } from "./services/ContactService";
 
 const server = serve({
   routes: {
@@ -20,7 +21,43 @@ const server = serve({
         });
       },
     },
-
+    "/api/contacts": {
+      async GET(req) {
+        return Response.json(getAll());
+      },
+      async POST(req) {
+        const contact = await req.json();
+        save(contact);
+        return Response.json({ message: "Contact saved successfully" });
+      },
+      async PUT(req) {
+        const contact = await req.json();
+        update(contact.id, contact);
+        return Response.json({ message: "Contact updated successfully" });
+      },
+      async DELETE(req) {
+        const contact = await req.json();
+        remove(contact.id);
+        return Response.json({ message: "Contact deleted successfully" });
+      },
+    },
+    "/api/contacts/:id": {
+      async GET(req) {
+        const id = Number(req.params.id);
+        return Response.json(getById(id));
+      },
+      async PUT(req) {
+        const id = Number(req.params.id);
+        const contact = await req.json();
+        update(id, contact);
+        return Response.json({ message: "Contact updated successfully" });
+      },
+      async DELETE(req) {
+        const id = Number(req.params.id);
+        remove(id);
+        return Response.json({ message: "Contact deleted successfully" });
+      },
+    },
     "/api/hello/:name": async req => {
       const name = req.params.name;
       return Response.json({
